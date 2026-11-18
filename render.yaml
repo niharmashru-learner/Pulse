@@ -1,0 +1,31 @@
+# Render Blueprint: creates the web service + a Postgres database in one go.
+# Dashboard -> New -> Blueprint -> pick this repo.
+services:
+  - type: web
+    name: teamflow
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_TZ
+        value: Asia/Kolkata
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_NAME
+        value: Admin
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false          # you will be asked to type this when you create the Blueprint
+      - key: DATABASE_URL
+        fromDatabase:
+          name: teamflow-db
+          property: connectionString
+
+databases:
+  - name: teamflow-db
+    plan: free
